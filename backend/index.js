@@ -11,7 +11,7 @@ connectDB()
         })
 
         app.on("error", (error) => {
-            console.log("Error", error)
+            console.log("Error while initializing server: ", error)
             throw error
         })
     })
