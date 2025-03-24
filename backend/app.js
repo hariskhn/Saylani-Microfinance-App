@@ -13,7 +13,9 @@ app.use(express.urlencoded({extended: true, limit: "16kb"}))
 app.use(cookieParser())
 
 import userRoutes from "./routes/user.route.js";
+import loanRoutes from "./routes/loan.route.js";
 
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/loan", loanRoutes);
 
 export { app };
