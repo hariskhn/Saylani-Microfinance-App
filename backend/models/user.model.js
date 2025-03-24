@@ -29,6 +29,12 @@ const userSchema = new Schema({
     },
     refreshToken: {
         type: String
+    },
+    address: {
+        type: String
+    },
+    phone: {
+        type: String
     }
 }, { timestamps: true });
 
