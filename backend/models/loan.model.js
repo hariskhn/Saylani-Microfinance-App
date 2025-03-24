@@ -26,6 +26,18 @@ const loanSchema = new Schema({
         type: Number,
         required: true
     },
+    guarantors: [{
+        type: Schema.Types.ObjectId,
+        ref: "Guarantor"
+    }],
+    statementUrl: {
+        type: String,
+        default: null
+    },  
+    salarySheetUrl: {
+        type: String,
+        default: null
+    },
     status: {
         type: String,
         enum: ["pending", "approved", "rejected"],
