@@ -14,8 +14,10 @@ app.use(cookieParser())
 
 import userRoutes from "./routes/user.route.js";
 import loanRoutes from "./routes/loan.route.js";
+import appointmentRoutes from "./routes/appointment.route.js"
 
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/loan", loanRoutes);
+app.use("/api/v1/appointment", appointmentRoutes);
 
 export { app };
