@@ -3,9 +3,20 @@ import { Loan } from "../models/loan.model.js";
 import { Guarantor } from "../models/guarantor.model.js";
 
 
-// const createLoanRequest = async (req, res) => {
-// to be created with frontend
-// }
+const createLoanRequest = async (req, res) => {
+    const { category, subCategory, amountRequested, loanPeriod, initialDeposit } = req.body;
+
+    const loan = await Loan.create({
+        user: req.user._id,
+        category,
+        subCategory,
+        amountRequested,
+        loanPeriod,
+        initialDeposit
+    });
+
+    return res.status(201).json({ loan, message: "Loan created successfully"});
+}
 
 const getAllLoanRequests = async (req, res) => {
     try {
@@ -102,6 +113,7 @@ const deleteLoanRequest = async (req, res) => {
 }
 
 export {
+    createLoanRequest,
     getAllLoanRequests,
     getLoanRequestById,
     updateLoanRequest,
