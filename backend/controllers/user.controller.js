@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -26,8 +27,15 @@ const registerUser = async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) return res.status(400).json({ message: "User already exists" });
 
-        const newUser = new User({ name, email, password: name + email + cnic + Math.random(), cnic });
+        const password = name + email + cnic + Math.random();
+        const newUser = new User({ name, email, password, cnic });
         await newUser.save();
+
+        await sendEmail({
+            to: email,
+            subject: "Welcome to Saylani Microfinance!",
+            text: `Hi ${name},\n\nYour password is ${password}`,
+        });
 
         return res.status(201).json({ newUser, message: "User created Successfully" });
     } catch (error) {
@@ -107,8 +115,8 @@ const forgotPassword = async (req, res) => {
 
         return res.status(200).json({ updatedUser, message: "Password changed successfully" });
     }
-    catch(error){
-        return res.status(500).json({message: error.message});
+    catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 }
 
