@@ -17,6 +17,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    isPasswordChanged: {
+        type: Boolean,
+        default: false,
+    },
     cnic: {
         type: String,
         required: true,
@@ -39,8 +43,8 @@ const userSchema = new Schema({
 }, { timestamps: true });
 
 userSchema.pre("save", async function (next) {
-    if(!this.isModified("password")) return next()
-        
+    if (!this.isModified("password")) return next()
+
     this.password = await bcrypt.hash(this.password, 10)
     next()
 })
@@ -49,7 +53,7 @@ userSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
 
-userSchema.methods.generateAccessToken = function() {
+userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
             _id: this._id,
@@ -60,10 +64,10 @@ userSchema.methods.generateAccessToken = function() {
         {
             expiresIn: process.env.ACCESS_TOKEN_EXPIRY
         }
-    )   
+    )
 }
 
-userSchema.methods.generateRefreshToken = function() {  
+userSchema.methods.generateRefreshToken = function () {
     return jwt.sign(
         {
             _id: this._id
@@ -72,9 +76,9 @@ userSchema.methods.generateRefreshToken = function() {
         {
             expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
-    )  
+    )
 }
 
-const User = mongoose.model("User", userSchema); 
+const User = mongoose.model("User", userSchema);
 
 export default User;
