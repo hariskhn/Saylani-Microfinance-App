@@ -66,7 +66,7 @@ const loginUser = async (req, res) => {
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: "none",
+            sameSite: process.env.NODE_ENV === 'production' ? "none" : "Lax",
         }
 
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
@@ -111,7 +111,15 @@ const forgotPassword = async (req, res) => {
             return res.status(401).json({ message: "Password should be same" });
         }
 
-        const updatedUser = await User.findByIdAndUpdate(req.user._id, { password }, { new: true });
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.password = password;
+        user.isPasswordChanged = true;
+        const updatedUser = await user.save();
 
         return res.status(200).json({ updatedUser, message: "Password changed successfully" });
     }
