@@ -1,6 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import { Loan } from "../models/loan.model.js";
 import { Guarantor } from "../models/guarantor.model.js";
+import cloudinary from "../utils/cloudinary.js";
 
 
 const createLoanRequest = async (req, res) => {
@@ -15,18 +16,29 @@ const createLoanRequest = async (req, res) => {
         initialDeposit
     });
 
-    return res.status(201).json({ loan, message: "Loan created successfully"});
+    return res.status(201).json({ loan, message: "Loan created successfully" });
 }
 
 const getAllLoanRequests = async (req, res) => {
     try {
         const user = req.user;
 
-        const loanRequests = await Loan.find({ user })
-            .select("category subCategory amountRequested loanPeriod initialDeposit status")
+        let loanRequests = await Loan.find({ user })
+            .select("category subCategory amountRequested loanPeriod initialDeposit status allInfoGiven guarantors createdAt")
             .lean();
 
-        return res.status(200).json({ loanRequests, message: "All loan fetched successfully" });
+        for (const loan of loanRequests) {
+            if (loan.guarantors && loan.guarantors.length > 0) {
+                const guarantors = await Guarantor.find({
+                    _id: { $in: loan.guarantors }
+                }).lean();
+                loan.guarantors = guarantors;
+            } else {
+                loan.guarantors = [];
+            }
+        }
+
+        return res.status(200).json(loanRequests);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -43,7 +55,7 @@ const getLoanRequestById = async (req, res) => {
         }
 
         const loanRequest = await Loan.findById(loanId)
-            .select("category subCategory amountRequested loanPeriod initialDeposit status")
+            .select("category subCategory amountRequested loanPeriod initialDeposit guarantors status")
             .lean();
 
         if (!loanRequest) {
@@ -59,7 +71,9 @@ const getLoanRequestById = async (req, res) => {
 const updateLoanRequest = async (req, res) => {
     try {
         const { loanId } = req.params;
-        const { guarantors, statementUrl, salarySheetUrl } = req.body;
+        const { guarantors, statementImg, salarySheetImg } = req.body;
+        let statementImgResult;
+        let salarySheetImgResult;
 
         if (!loanId) {
             return res.status(400).json({ message: "Loan ID is required" });
@@ -78,14 +92,27 @@ const updateLoanRequest = async (req, res) => {
 
         const guarantorIds = [];
         for (const g of guarantors) {
-            const newGuarantor = new Guarantor(g);
+            const newGuarantor = new Guarantor({ loan: loanId, ...g });
             await newGuarantor.save();
             guarantorIds.push(newGuarantor._id);
         }
 
+        if (statementImg) {
+            statementImgResult = await cloudinary.uploader.upload(statementImg, {
+                folder: 'SMIT'
+            });
+        }
+
+        if (salarySheetImg) {
+            salarySheetImgResult = await cloudinary.uploader.upload(salarySheetImg, {
+                folder: 'SMIT'
+            });
+        }
+
         loan.guarantors = guarantorIds;
-        loan.statementUrl = statementUrl || loan.statementUrl;
-        loan.salarySheetUrl = salarySheetUrl || loan.salarySheetUrl;
+        loan.statementUrl = statementImgResult.secure_url || loan.statementUrl;
+        loan.salarySheetUrl = salarySheetImgResult.secure_url || loan.salarySheetUrl;
+        loan.allInfoGiven = true;
         await loan.save();
 
         return res.status(200).json({ message: "Loan request updated successfully", loan });
