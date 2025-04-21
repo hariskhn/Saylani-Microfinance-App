@@ -42,6 +42,10 @@ const loanSchema = new Schema({
         type: String,
         enum: ["pending", "approved", "rejected"],
         default: "pending"
+    },
+    allInfoGiven: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 
