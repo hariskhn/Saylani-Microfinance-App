@@ -110,8 +110,8 @@ const updateLoanRequest = async (req, res) => {
         }
 
         loan.guarantors = guarantorIds;
-        loan.statementUrl = statementImgResult.secure_url || loan.statementUrl;
-        loan.salarySheetUrl = salarySheetImgResult.secure_url || loan.salarySheetUrl;
+        loan.statementUrl = statementImgResult?.secure_url || loan.statementUrl;
+        loan.salarySheetUrl = salarySheetImgResult?.secure_url || loan.salarySheetUrl;
         loan.allInfoGiven = true;
         await loan.save();
 
