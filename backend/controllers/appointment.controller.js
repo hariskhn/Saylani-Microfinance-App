@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import { Appointment } from "../models/appointment.model.js";
 import { Loan } from "../models/loan.model.js";
 import { TokenNum } from "../models/tokenNum.model.js";
@@ -54,6 +55,9 @@ const scheduleAppointment = async (req, res) => {
             officeLocation,
             qrCode
         });
+
+        loan.status = "approved"
+        await loan.save();
 
         return res.status(201).json({ appointment, message: "Appointment scheduled successfully" });
     } catch (error) {
