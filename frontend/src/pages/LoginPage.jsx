@@ -15,7 +15,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       await login({ email, password });
-      if( loan ) {
+      if ( loan ) {
         await saveLoanInDB();
       }
     } catch (err) {
@@ -23,8 +23,10 @@ const LoginPage = () => {
     }
   };
 
-  useEffect(()=>{
-    if(user){
+  useEffect(() => {
+    if (user && user._id === "67f7d50ee40925fefca6a48b") {
+      navigate("/admin-dashboard");
+    } else if (user) {
       navigate("/dashboard");
     }
   }, [user]);
