@@ -4,8 +4,15 @@ import { Loan } from "../models/loan.model.js"
 
 const fetchAllApplications = async (req, res) => {
     try {
-        const applications = await Loan.find().lean();
-        return res.status(200).json({ applications, message: "Applications fetched successfully" });
+        const applications = await Loan.find()
+            .populate('user', 'name') // Populate user details
+            .populate('guarantors', 'name email cnic location') // Populate guarantor details
+            .lean();
+            
+        return res.status(200).json({ 
+            applications, 
+            message: "Applications fetched successfully" 
+        });
     } catch (error) {
         console.error('Error fetching applications:', error);
         return res.status(500).json({ message: error.message });
