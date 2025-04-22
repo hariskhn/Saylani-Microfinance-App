@@ -17,7 +17,7 @@ const LoanDetailsModal = ({ loan, onClose }) => {
         {loan.allInfoGiven ? (
           <LoanDetailsView loan={loan} />
         ) : (
-          <LoanDetailsForm loan={loan} />
+          <LoanDetailsForm loan={loan} onClose={onClose} />
         )}
       </div>
     </div>
