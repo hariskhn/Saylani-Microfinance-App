@@ -12,13 +12,10 @@ const ChangePasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+    let user = await changePassword({ password, confirmPassword });
+    if(user){
+      navigate("/dashboard");
     }
-
-    await changePassword({ password, confirmPassword });
-    navigate("/dashboard");
   };
 
   return (
