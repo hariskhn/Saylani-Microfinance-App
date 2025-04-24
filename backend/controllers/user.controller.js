@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
         }
 
         const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ message: "User already exists" });
+        if (existingUser) return res.status(400).json({ message: "User already exists. Email and CNIC should be unique." });
 
         const password = name + email + cnic + Math.random();
         const newUser = new User({ name, email, password, cnic });
@@ -52,12 +52,12 @@ const loginUser = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ message: "User doesnot exist!" });
+            return res.status(404).json({ message: "Invalid email or password!" });
         }
 
         const isPasswordValid = await user.comparePassword(password)
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invalid password!" });
+            return res.status(401).json({ message: "Invalid email or password!" });
         }
 
         const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
