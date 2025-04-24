@@ -1,7 +1,9 @@
 import React from 'react';
-import { FiX, FiDollarSign, FiCalendar, FiCreditCard, FiUsers, FiMail, FiMapPin, FiUser } from 'react-icons/fi';
+import { FiDollarSign, FiCreditCard, FiUsers, FiMail, FiMapPin, FiUser } from 'react-icons/fi';
+import { jsPDF } from 'jspdf';
+import { useApplicationStore } from '../stores/useApplicationStore';
 
-const LoanDetailsView = ({ loan }) => {
+const LoanDetailsView = ({ loan, user }) => {
     if (!loan) return null;
 
     const statusColors = {
@@ -12,6 +14,52 @@ const LoanDetailsView = ({ loan }) => {
     };
 
     const statusConfig = statusColors[loan.status?.toLowerCase()] || statusColors.default;
+
+    const {fetchAnApplicationAppointment} = useApplicationStore();
+
+    const handleDownloadSlip = async (loan) => {
+        const doc = new jsPDF();
+        const appointment = await fetchAnApplicationAppointment({ loanID: loan._id });
+    
+        const token = appointment?.tokenNumber;
+        const appointmentDate = new Date(appointment?.date).toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        const appointmentTime = appointment?.timeSlot;
+        const location = appointment?.officeLocation;
+        const qrCodeUrl = appointment?.qrCode;
+    
+        // Title
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Loan Appointment Slip', 105, 20, null, null, 'center');
+    
+        // Line separator
+        doc.setDrawColor(0);
+        doc.line(20, 25, 190, 25);
+    
+        // Appointment details
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        let y = 40;
+        doc.text(`Token Number: ${token}`, 20, y);
+        y += 10;
+        doc.text(`Appointment Date: ${appointmentDate}`, 20, y);
+        y += 10;
+        doc.text(`Appointment Time: ${appointmentTime}`, 20, y);
+        y += 10;
+        doc.text(`Office Location: ${location}`, 20, y);
+    
+        // QR Code
+        if (qrCodeUrl) {
+            doc.addImage(qrCodeUrl, 'PNG', 20, y + 20, 60, 60);
+        }
+    
+        doc.save(`${token}_Slip.pdf`);
+    };
+      
 
     return (
         <div className="space-y-6">
@@ -41,6 +89,16 @@ const LoanDetailsView = ({ loan }) => {
                                 {loan.status}
                             </span>
                         </div>
+                        {loan.status?.toLowerCase() === 'approved' && user==="user" && (
+                            <div className="mt-4 text-right">
+                                <button
+                                    onClick={() => handleDownloadSlip(loan)}
+                                    className="bg-blue-600 text-white px-4 py-2 cursor-pointer rounded-md hover:bg-blue-700 transition"
+                                >
+                                    Download Slip
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
