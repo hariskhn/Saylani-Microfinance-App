@@ -3,6 +3,7 @@ import { loanCategories } from "../loanCategories";
 import { useUserStore } from "../stores/useUserStore";
 import { useLoanStore } from "../stores/useLoanStore";
 import { useNavigate } from 'react-router-dom';
+import toast from "react-hot-toast";
 
 const Calculator = () => {
   const { signup } = useUserStore();
@@ -23,7 +24,7 @@ const Calculator = () => {
   const navigate = useNavigate();
 
   const handleCalculate = () => {
-    if (!category || !loanPeriod || !initialDeposit) return;
+    if (!category || !subCategory || !loanPeriod || !initialDeposit) return toast.error("All Fields are required!");
     const maxLoan = loanCategories[category].maxLoan;
     const deposit = parseFloat(initialDeposit) || 0;
     const period = parseInt(loanPeriod) || 0;
@@ -34,15 +35,20 @@ const Calculator = () => {
     setMonthlyInstallment(monthly.toFixed(2));
   };
 
-  const handleSubmitApplication = () => {
-    signup({ name, email, cnic });
-    createLoan({ category, subCategory, amountRequested, loanPeriod, initialDeposit });
-    alert("Application Submitted, check your email.");
-    setShowModal(false);
-    setName("");
-    setEmail("");
-    setCnic("");
-    navigate("/login");
+  const handleSubmitApplication = async () => {
+    // if (!name || !email || !cnic) return toast.error("All Fields are required!");
+    let user = await signup({ name, email, cnic });
+    if (user) {
+      createLoan({ category, subCategory, amountRequested, loanPeriod, initialDeposit });
+      toast.success("Application submitted!\nCheck your email, including the spam folder.", {
+        duration: 5000,
+      });      
+      setShowModal(false);
+      setName("");
+      setEmail("");
+      setCnic("");
+      navigate("/login");
+    }
   };
 
   return (
