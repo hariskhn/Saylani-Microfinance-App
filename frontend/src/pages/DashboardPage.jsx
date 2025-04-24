@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLoanStore } from '../stores/useLoanStore';
 import { useUserStore } from '../stores/useUserStore';
 import LoanDetailsModal from '../components/LoanDetailsModal';
-import { FiDollarSign, FiCalendar, FiChevronRight, FiClock, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { FiDollarSign, FiChevronRight, FiClock, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 
 const DashboardPage = () => {
   const { user } = useUserStore();
@@ -14,20 +14,22 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const getLoans = async () => {
-      setIsLoading(true);
-      try {
-        const userLoans = await fetchAUsersLoans();
-        setLoans(userLoans);
-      } catch (error) {
-        console.error("Error fetching loans:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (!showModal) {
+      const getLoans = async () => {
+        setIsLoading(true);
+        try {
+          const userLoans = await fetchAUsersLoans();
+          setLoans(userLoans);
+        } catch (error) {
+          console.error("Error fetching loans:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
-    getLoans();
-  }, []);
+      getLoans();
+    }
+  }, [showModal]);
 
   const handleViewDetails = (loan) => {
     setSelectedLoan(loan);
@@ -52,7 +54,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 px-4 pb-8 py-26 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Welcome Header */}
         <div className="text-center mb-10">
