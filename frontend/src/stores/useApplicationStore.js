@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import axios from "../lib/axios"
+import { fetchAnAppointment } from '../../../backend/controllers/appointment.controller';
 
 export const useApplicationStore = create((set, get) => ({
     fetchAllApplications: async () => {
@@ -15,6 +16,16 @@ export const useApplicationStore = create((set, get) => ({
         try {
             const res = await axios.post(`/appointment/${loanID}`, { date, timeSlot, officeLocation });
             console.log(res.data)
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    fetchAnApplicationAppointment: async({ loanID }) => {
+        try {
+            const res = await axios.get(`/appointment/${loanID}`);
+            console.log(res.data)
+            return res.data.appointment;
         } catch (error) {
             console.error(error);
         }
