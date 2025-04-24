@@ -5,7 +5,9 @@ import { useUserStore } from "./stores/useUserStore";
 import DashboardPage from "./pages/DashboardPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import { useEffect } from "react";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./pages/AdminDashboardPage";
+import Navbar from "./components/Navbar";
+import { Toaster } from "react-hot-toast"
 
 const App = () => {
   const { user } = useUserStore();
@@ -14,6 +16,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen overflow-hidden">
+      <Navbar />
       <Routes>
         <Route path="/" element={ <HomePage /> } />
         <Route path="/login" element={ <LoginPage /> } />
@@ -21,6 +24,7 @@ const App = () => {
         <Route path="/dashboard" element={ !user ? <Navigate to="/login" /> : user?.isPasswordChanged ? <DashboardPage />  : <Navigate to="/change-password" /> } />
         <Route path="/admin-dashboard" element={ user?.role === "admin" ? <AdminDashboard /> : <Navigate to={"/login"} /> } />
       </Routes>
+      <Toaster />
     </div>
   )
 }
