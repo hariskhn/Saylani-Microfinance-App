@@ -1,6 +1,6 @@
 const HeroSection = () => {
     return (
-        <section className="relative bg-gradient-to-r from-blue-600 to-blue-400 text-white lg:py-20 sm:py-16 py-12 px-6 text-center">
+        <section className="relative bg-gradient-to-r from-blue-600 to-blue-400 text-white lg:pb-20 lg:pt-30 sm:pb-16 sm:pt-26 pb-12 pt-24 px-6 text-center">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-5xl font-extrabold leading-tight tracking-tight drop-shadow-lg">
                     Saylani Microfinance – Empowering Your Future

@@ -15,7 +15,6 @@ const AdminDashboard = () => {
     const [approveModalOpen, setApproveModalOpen] = useState(false);
     const [selectedApp, setSelectedApp] = useState(null);
 
-    // New states for scheduling
     const [scheduleDate, setScheduleDate] = useState("");
     const [scheduleTime, setScheduleTime] = useState("");
     const [scheduleLocation, setScheduleLocation] = useState("");
@@ -64,7 +63,7 @@ const AdminDashboard = () => {
 
     const handleApproveClick = (app) => {
         setSelectedApp(app);
-        setScheduleDate(""); // reset form values
+        setScheduleDate("");
         setScheduleTime("");
         setScheduleLocation("");
         setApproveModalOpen(true);
@@ -91,15 +90,15 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            {/* Header */}
-            <div className="flex items-center justify-center mb-8">
-                <FiHome className="text-blue-600 text-3xl mr-3" />
-                <h1 className="text-3xl font-extrabold text-gray-800">Loan Applications Dashboard</h1>
+        <div className="px-4 sm:px-6 lg:px-8 py-6 bg-gray-50 min-h-screen">
+            <div className="flex flex-col sm:flex-row items-center justify-center mb-8 mt-18 text-center">
+                <FiHome className="text-blue-600 text-3xl mr-0 sm:mr-3 mb-2 sm:mb-0" />
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800">
+                    Loan Applications Dashboard
+                </h1>
             </div>
 
-            {/* Search */}
-            <div className="bg-white p-4 rounded-lg shadow-sm mb-6 flex items-center">
+            <div className="bg-white p-4 rounded-lg shadow-sm mb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <div className="relative flex-1">
                     <FiSearch className="absolute left-3 top-3 text-gray-400" />
                     <input
@@ -112,8 +111,7 @@ const AdminDashboard = () => {
                 </div>
             </div>
 
-            {/* Table */}
-            <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+            <div className="bg-white rounded-lg shadow overflow-x-auto border border-gray-200">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
@@ -174,19 +172,19 @@ const AdminDashboard = () => {
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <div className="flex space-x-2">
+                                    <div className="flex flex-col sm:flex-row gap-2">
                                         <button
                                             onClick={() => handleViewClick(app)}
-                                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 flex items-center transition-colors"
+                                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 flex items-center cursor-pointer justify-center transition-colors"
                                         >
                                             <FiEye className="mr-1" /> View
                                         </button>
                                         <button
                                             onClick={() => handleApproveClick(app)}
                                             disabled={app.status !== "pending"}
-                                            className={`px-3 py-1 rounded-md flex items-center transition-colors ${app.status !== "pending"
-                                                    ? "bg-gray-200 text-gray-600 cursor-not-allowed"
-                                                    : "bg-blue-600 text-white hover:bg-blue-700"
+                                            className={`px-3 py-1 rounded-md flex items-center justify-center transition-colors ${app.status !== "pending"
+                                                ? "bg-gray-200 text-gray-600 cursor-not-allowed"
+                                                : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
                                                 }`}
                                         >
                                             <FiCalendar className="mr-1" /> Approve & Schedule
@@ -201,7 +199,7 @@ const AdminDashboard = () => {
 
             {/* View Modal */}
             {viewModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-start justify-center backdrop-blur bg-black/20 overflow-y-auto py-10">
+                <div className="fixed inset-0 z-50 flex items-start justify-center backdrop-blur bg-black/20 overflow-y-auto py-10 px-4">
                     <div className="bg-white rounded-2xl w-full max-w-2xl shadow-xl p-6 relative">
                         <button
                             onClick={() => setViewModalOpen(false)}
@@ -216,7 +214,7 @@ const AdminDashboard = () => {
 
             {/* Approve & Schedule Modal */}
             {approveModalOpen && (
-                <div className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center px-4 py-6">
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-200">
                         <div className="p-6">
                             <div className="flex justify-between items-center mb-6">
@@ -233,7 +231,7 @@ const AdminDashboard = () => {
                             </div>
 
                             <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
                                             <FiCalendar className="mr-2" />

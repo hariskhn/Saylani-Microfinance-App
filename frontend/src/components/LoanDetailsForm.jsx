@@ -58,7 +58,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
   return (
     <>
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-blue-600 flex items-center justify-center gap-2">
+        <h2 className="text-2xl font-bold mb-3 text-blue-600 flex items-center justify-center gap-2">
           <FiCreditCard className="text-blue-500" />
           Complete Your Application
         </h2>
