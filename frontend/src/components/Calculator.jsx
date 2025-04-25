@@ -16,6 +16,7 @@ const Calculator = () => {
   const [amountRequested, AmountRequested] = useState(0);
   const [monthlyInstallment, setMonthlyInstallment] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -36,20 +37,31 @@ const Calculator = () => {
   };
 
   const handleSubmitApplication = async () => {
-    // if (!name || !email || !cnic) return toast.error("All Fields are required!");
-    let user = await signup({ name, email, cnic });
-    if (user) {
-      createLoan({ category, subCategory, amountRequested, loanPeriod, initialDeposit });
-      toast.success("Application submitted!\nCheck your email, including the spam folder.", {
-        duration: 5000,
-      });      
-      setShowModal(false);
-      setName("");
-      setEmail("");
-      setCnic("");
-      navigate("/login");
+    if (isLoading) return;
+  
+    setIsLoading(true);
+  
+    try {
+      let user = await signup({ name, email, cnic });
+  
+      if (user) {
+        createLoan({ category, subCategory, amountRequested, loanPeriod, initialDeposit });
+        toast.success("Application submitted!\nCheck your email, including the spam folder.", {
+          duration: 5000,
+        });      
+        setShowModal(false);
+        setName("");
+        setEmail("");
+        setCnic("");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="max-w-4xl mx-auto p-8 rounded-3xl shadow-2xl space-y-6 animate-fade-in mb-20 bg-white">
@@ -182,9 +194,11 @@ const Calculator = () => {
               />
               <button
                 onClick={handleSubmitApplication}
-                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer"
+                className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
-                Submit Application
+                {isLoading ? "Submitting..." : "Submit Application"}
               </button>
             </div>
           </div>

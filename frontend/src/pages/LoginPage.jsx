@@ -6,20 +6,27 @@ import { useLoanStore } from "../stores/useLoanStore";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
   const { login, user } = useUserStore();
   const { loan, saveLoanInDB } = useLoanStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
+
+    setIsLoading(true);
     try {
       await login({ email, password });
-      if ( loan ) {
+      if (loan) {
         await saveLoanInDB();
+        useLoanStore.setState({ loan: null });
       }
     } catch (err) {
       console.error("Login or loan error:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -49,7 +56,6 @@ const LoginPage = () => {
             />
           </div>
 
-
           <div>
             <label className="block text-sm font-semibold text-gray-700">Password</label>
             <input
@@ -62,12 +68,14 @@ const LoginPage = () => {
             />
           </div>
 
-
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl transition hover:cursor-pointer hover:scale-103"
+            disabled={isLoading}
+            className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-xl transition hover:cursor-pointer hover:scale-103 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Login
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
 
