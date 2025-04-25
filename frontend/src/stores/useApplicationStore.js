@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import axios from "../lib/axios"
-import { fetchAnAppointment } from '../../../backend/controllers/appointment.controller';
 
 export const useApplicationStore = create((set, get) => ({
     fetchAllApplications: async () => {
