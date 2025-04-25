@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
         await sendEmail({
             to: email,
             subject: "Welcome to Saylani Microfinance!",
-            text: `Hi ${name},\n\nYour password is ${password}`,
+            text: `Hi ${name},\n\nYour password is "${password}"`,
         });
 
         return res.status(201).json({ newUser, message: "User created Successfully" });
