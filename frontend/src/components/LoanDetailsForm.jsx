@@ -7,6 +7,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
   const [guarantor2, setGuarantor2] = useState({ name: '', email: '', location: '', cnic: '' });
   const [statementImg, setStatementImg] = useState(null);
   const [salarySheetImg, setSalarySheetImg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { updateLoanRequest } = useLoanStore();
 
@@ -39,6 +40,9 @@ const LoanDetailsForm = ({ loan, onClose }) => {
     });
 
   const handleSubmit = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+
     const guarantors = [guarantor1, guarantor2];
 
     // Convert optional files to base64
@@ -258,10 +262,12 @@ const LoanDetailsForm = ({ loan, onClose }) => {
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer mt-4 flex items-center justify-center gap-2"
+          className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer mt-4 flex items-center justify-center gap-2 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
         >
           <FiCheck />
-          Submit Application
+          {isLoading ? "Submitting Application..." : "Submit Application"}
         </button>
       </div>
     </>
