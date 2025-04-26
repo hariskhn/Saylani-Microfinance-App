@@ -10,7 +10,7 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
   const { login, user } = useUserStore();
-  const { loan, saveLoanInDB } = useLoanStore();
+  const { saveLoanInDB } = useLoanStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,10 +18,11 @@ const LoginPage = () => {
 
     setIsLoading(true);
     try {
-      await login({ email, password });
-      if (loan) {
-        await saveLoanInDB();
-        useLoanStore.setState({ loan: null });
+      let loggedInUser = await login({ email, password });
+      const loan = JSON.parse(localStorage.getItem('loan'));
+      if (loggedInUser && loan) {
+        await saveLoanInDB(loan);
+        localStorage.removeItem('loan');
       }
     } catch (err) {
       console.error("Login or loan error:", err);

@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { loanCategories } from "../loanCategories";
 import { useUserStore } from "../stores/useUserStore";
-import { useLoanStore } from "../stores/useLoanStore";
 import { useNavigate } from 'react-router-dom';
 import toast from "react-hot-toast";
 
 const Calculator = () => {
   const { signup } = useUserStore();
-  const { createLoan } = useLoanStore();
 
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
@@ -45,7 +43,7 @@ const Calculator = () => {
       let user = await signup({ name, email, cnic });
   
       if (user) {
-        createLoan({ category, subCategory, amountRequested, loanPeriod, initialDeposit });
+        localStorage.setItem('loan', JSON.stringify({ category, subCategory, amountRequested, loanPeriod, initialDeposit }));
         toast.success("Application submitted!\nCheck your email, including the spam folder.", {
           duration: 5000,
         });      
