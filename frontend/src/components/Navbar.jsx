@@ -26,7 +26,7 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {user && (
             <Link
-              to="/dashboard"
+              to={user.role === 'admin' ? '/admin-dashboard' : '/dashboard'}
               className="text-white font-bold hover:underline mr-2"
             >
               Dashboard
