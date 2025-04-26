@@ -1,18 +1,11 @@
-import { create } from 'zustand'
-import axios from "../lib/axios"
+import { create } from 'zustand';
+import axios from "../lib/axios";
+import toast from 'react-hot-toast';
 
 export const useLoanStore = create((set, get) => ({
-    loan: null,
-
-    createLoan: ({ category, subCategory, amountRequested, loanPeriod, initialDeposit }) => {
-        set({ loan: { category, subCategory, amountRequested, loanPeriod, initialDeposit } });
-        console.log(get().loan);
-    },
-
-    saveLoanInDB: async () => {
+    saveLoanInDB: async ({ category, subCategory, amountRequested, loanPeriod, initialDeposit }) => {
         try {
-            console.log(get().loan);
-            const res = await axios.post("/loan", get().loan);
+            const res = await axios.post("/loan", { category, subCategory, amountRequested, loanPeriod, initialDeposit });
             console.log(res.data);
         } catch (error) {
             console.error(error);
@@ -41,11 +34,19 @@ export const useLoanStore = create((set, get) => ({
 
     updateLoanRequest: async ({ loanID, guarantors, statementImg, salarySheetImg }) => {
         try {
-            const res = await axios.patch(`/loan/${loanID}`, {guarantors, statementImg, salarySheetImg});
-            console.log(res.data);
+          const res = await axios.patch(`/loan/${loanID}`, { guarantors, statementImg, salarySheetImg });
+          console.log(res.data);
+          return res.data.loan;
         } catch (error) {
-            console.error(error)
+          console.error(error);
+          if (error.response?.data?.message?.includes("E11000 duplicate key error")) {
+            const duplicateField = error.response.data.message.includes("email") ? "Email" : "CNIC";
+            toast.error(`${duplicateField} already exists. Please use a different one.`);
+          } else {
+            toast.error(error.response?.data?.message || "An error occurred");
+          }
         }
-    }
+      }
+      
 
 }))

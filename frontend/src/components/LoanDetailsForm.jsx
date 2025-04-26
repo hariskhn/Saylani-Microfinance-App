@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLoanStore } from '../stores/useLoanStore';
 import { FiUser, FiMail, FiMapPin, FiCreditCard, FiDollarSign, FiUpload, FiPaperclip, FiCheck } from 'react-icons/fi';
+import toast from 'react-hot-toast';
 
 const LoanDetailsForm = ({ loan, onClose }) => {
   const [guarantor1, setGuarantor1] = useState({ name: '', email: '', location: '', cnic: '' });
@@ -41,22 +42,33 @@ const LoanDetailsForm = ({ loan, onClose }) => {
 
   const handleSubmit = async () => {
     if (isLoading) return;
+
+    if (
+      !guarantor1.name || !guarantor1.email || !guarantor1.location || !guarantor1.cnic ||
+      !guarantor2.name || !guarantor2.email || !guarantor2.location || !guarantor2.cnic
+    ) {
+      toast.error('Please fill in all guarantor details before submitting.');
+      return;
+    }
+
     setIsLoading(true);
 
     const guarantors = [guarantor1, guarantor2];
 
-    // Convert optional files to base64
     const statementBase64 = statementImg ? await toBase64(statementImg) : null;
     const salaryBase64 = salarySheetImg ? await toBase64(salarySheetImg) : null;
 
-    await updateLoanRequest({
+    let updatedLoan = await updateLoanRequest({
       loanID: loan._id,
       guarantors,
       statementImg: statementBase64,
       salarySheetImg: salaryBase64,
     });
 
-    onClose(); // Close modal
+    if(updatedLoan){
+      onClose();
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -77,6 +89,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
             Guarantor 1 Details
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            {/* Name */}
             <div className="relative">
               <label className="block text-sm text-gray-500 mb-1">Full Name</label>
               <div className="relative">
@@ -89,6 +102,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
                 />
               </div>
             </div>
+            {/* Email */}
             <div className="relative">
               <label className="block text-sm text-gray-500 mb-1">Email</label>
               <div className="relative">
@@ -101,6 +115,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
                 />
               </div>
             </div>
+            {/* Location */}
             <div className="relative">
               <label className="block text-sm text-gray-500 mb-1">Location</label>
               <div className="relative">
@@ -113,6 +128,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
                 />
               </div>
             </div>
+            {/* CNIC */}
             <div className="relative">
               <label className="block text-sm text-gray-500 mb-1">CNIC</label>
               <div className="relative">
@@ -135,6 +151,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
             Guarantor 2 Details
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            {/* Name */}
             <div className="relative">
               <label className="block text-sm text-gray-500 mb-1">Full Name</label>
               <div className="relative">
@@ -147,6 +164,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
                 />
               </div>
             </div>
+            {/* Email */}
             <div className="relative">
               <label className="block text-sm text-gray-500 mb-1">Email</label>
               <div className="relative">
@@ -159,6 +177,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
                 />
               </div>
             </div>
+            {/* Location */}
             <div className="relative">
               <label className="block text-sm text-gray-500 mb-1">Location</label>
               <div className="relative">
@@ -171,6 +190,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
                 />
               </div>
             </div>
+            {/* CNIC */}
             <div className="relative">
               <label className="block text-sm text-gray-500 mb-1">CNIC</label>
               <div className="relative">
@@ -188,7 +208,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
 
         {/* File Uploads */}
         <div className="space-y-4">
-          {/* Statement Upload */}
+          {/* Bank Statement Upload */}
           <div className='p-2'>
             <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
               <FiDollarSign className="text-blue-500" />
@@ -223,7 +243,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
             </div>
           </div>
 
-          {/* Salary Sheet Upload */}
+          {/* Salary Slip Upload */}
           <div className='p-2'>
             <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
               <FiDollarSign className="text-blue-500" />
@@ -262,9 +282,7 @@ const LoanDetailsForm = ({ loan, onClose }) => {
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer mt-4 flex items-center justify-center gap-2 ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+          className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer mt-4 flex items-center justify-center gap-2 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <FiCheck />
           {isLoading ? "Submitting Application..." : "Submit Application"}
