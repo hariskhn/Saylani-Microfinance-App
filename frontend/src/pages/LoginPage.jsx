@@ -72,9 +72,8 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-xl transition hover:cursor-pointer hover:scale-103 ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-xl transition hover:cursor-pointer hover:scale-103 ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>
@@ -83,7 +82,15 @@ const LoginPage = () => {
         <p className="text-sm text-center text-gray-600">
           Don't have an account?{" "}
           <button
-            onClick={() => navigate("/")}
+            onClick={() => {
+              navigate("/", { replace: false });
+              setTimeout(() => {
+                const calculator = document.getElementById("calculator");
+                if (calculator) {
+                  calculator.scrollIntoView({ behavior: "smooth" });
+                }
+              }, 100); // delay to wait for navigation
+            }}
             className="text-blue-600 hover:underline font-medium hover:cursor-pointer"
           >
             Apply for a Loan
