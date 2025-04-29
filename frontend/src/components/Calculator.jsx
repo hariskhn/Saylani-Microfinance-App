@@ -36,17 +36,17 @@ const Calculator = () => {
 
   const handleSubmitApplication = async () => {
     if (isLoading) return;
-  
+
     setIsLoading(true);
-  
+
     try {
       let user = await signup({ name, email, cnic });
-  
+
       if (user) {
         localStorage.setItem('loan', JSON.stringify({ category, subCategory, amountRequested, loanPeriod, initialDeposit }));
         toast.success("Application submitted!\nCheck your email, including the spam folder.", {
           duration: 5000,
-        });      
+        });
         setShowModal(false);
         setName("");
         setEmail("");
@@ -59,11 +59,14 @@ const Calculator = () => {
       setIsLoading(false);
     }
   };
-  
+
 
   return (
-    <div className="max-w-4xl mx-auto p-8 rounded-3xl shadow-2xl space-y-6 animate-fade-in mb-20 bg-white">
-      <h2 className="text-4xl font-extrabold text-center text-blue-600">Loan Calculator</h2>
+    <div id="calculator" className="max-w-4xl mx-auto p-8 rounded-3xl shadow-2xl space-y-6 animate-fade-in mb-20 bg-white">
+    <div>
+      <h2 className="text-4xl font-extrabold text-center text-blue-600 mb-2">Loan Calculator</h2>
+      <p className="text-center text-gray-600 text-md font-semibold">Fill out the form below to calculate your loan and proceed with account creation.</p>
+    </div>
 
       {/* form section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -192,9 +195,8 @@ const Calculator = () => {
               />
               <button
                 onClick={handleSubmitApplication}
-                className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer ${
-                  isLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 {isLoading ? "Submitting..." : "Submit Application"}
               </button>
